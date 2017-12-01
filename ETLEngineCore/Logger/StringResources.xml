@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+	<Constants>
+		<Value>LogsPath</Value>
+		<String>Logs</String>
+	</Constants>
+	<Constants>
+		<Value>StartupMessage</Value>
+		<String>Процесс запущен.</String>
+	</Constants>
+	<TraceMessageKind>
+		<Value>CriticalError</Value>
+		<String>Критическая ошибка: </String>
+	</TraceMessageKind>
+	<TraceMessageKind>
+		<Value>Error</Value>
+		<String>Ошибка: </String>
+	</TraceMessageKind>
+	<TraceMessageKind>
+		<Value>Information</Value>
+		<String>Информация: </String>
+	</TraceMessageKind>
+	<TraceMessageKind>
+		<Value>Warning</Value>
+		<String>Предупреждение: </String>
+	</TraceMessageKind>
+</NewDataSet>
