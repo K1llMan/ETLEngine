@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph>
+	<MetaData id="meta1">
+		<MetaRecord from="field0" to="Name" type="String"/>
+		<MetaRecord from="field2" to="Sum1" type="Decimal"/>
+		<MetaRecord from="field1" to="Code" type="Int32"/>
+		<MetaRecord from="field3" to="Sum2" type="Decimal"/>		
+	</MetaData>
+
+	<MetaData id="meta2">
+		<MetaRecord from="Name" to="Name" type="String"/>
+		<MetaRecord from="Code" to="Code" type="String"/>
+		<MetaRecord from="Sum1" to="Sum1" type="Decimal"/>
+	</MetaData>
+	
+	<MetaData id="meta3">
+		<MetaRecord from="Code" to="Code" type="Int32"/>
+	</MetaData>
+		
+	<Stage num="0" desc="Stage 0 description">
+    <Node id="Node2" type="Node"></Node>
+    <!--
+		<Node id="Node3" type="CodeReaderWriter">
+			<attr name="code"><![CDATA[
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+using ETLEngineCore.Graph;
+
+namespace ETLEngineCore.Components
+{
+    public class CompileTextReader : Node
+    {
+        #region Основные функции
+
+        public override void Execute()
+        {
+        
+            Record r = InputPorts[0].Read();
+            while (r != null)
+            {
+                OutputPorts[0].Write(r);
+                r = InputPorts[0].Read();
+            }
+        }
+
+        #endregion Основные функции
+    }
+}			
+			]]>			
+			</attr>
+		</Node>
+
+		<Node id="Node1" searchPath="C:\test.csv" encoding="1251" type="TextFileReader" />
+		<Edge id="edge1" from="Node1:0" to="Node3:0" metadata="meta1" />
+		
+		<Node id="Node2" type="Node">
+			<OutputPort num="0" metadata="meta3"/>
+		</Node>
+		
+
+		 <Edge id="edge2" from="Node3:0" to="Node2:0" metadata="meta2" />
+		<Node id="Node0" searchPath="C:\*.csv" encoding="1251" type="TextFileReader">
+			<OutputPort num="0" metadata="meta1"/>
+		</Node>
+
+-->
+	</Stage>	
+</Graph>

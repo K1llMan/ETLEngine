@@ -17,4 +17,10 @@
     <ProjectReference Include="..\ETLEngineCore\ETLEngineCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="testGraph.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

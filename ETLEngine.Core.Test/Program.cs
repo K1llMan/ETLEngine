@@ -8,7 +8,7 @@ namespace ETLEngineCore.Test
         static void Main(string[] args)
         {
             ETLEngine engine = new ETLEngine();
-            engine.RunGraph("C:\\testGraph.xml");
+            engine.RunGraph("testGraph.xml");
         }
     }
 }
