@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ETLEngineCore.Graph
+﻿namespace ETLEngineCore.Graph
 {
     /// <summary>
     /// Ребро

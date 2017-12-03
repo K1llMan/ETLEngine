@@ -18,12 +18,12 @@ namespace ETLEngineCore.Graph
         /// <summary>
         /// Получение метаданных для записей
         /// </summary>
-        public MetaData MetaData { get; private set; }
+        public MetaData MetaData { get; }
 
         /// <summary>
         /// Получение названий полей для записей
         /// </summary>
-        public List<string> Fields { get; private set; }
+        public List<string> Fields { get; }
 
         #endregion Свойства
 

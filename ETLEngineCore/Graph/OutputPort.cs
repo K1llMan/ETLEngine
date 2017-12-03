@@ -19,11 +19,10 @@ namespace ETLEngineCore.Graph
         /// </summary>
         public MetaData MetaData
         {
-            get { return data == null ? null : data.MetaData; }
+            get { return data?.MetaData; }
             set
             {
-                if (data != null)
-                    data.Clear();
+                data?.Clear();
 
                 data = new RecordList(value);
             }
