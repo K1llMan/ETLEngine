@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 
 using ETLEngineCore.Database;
 
 namespace ETLEngineCore.Graph
 {
-    public class RecordTable
+    public class RecordTable: IEnumerable<DataRow>
     {
         #region Поля
 
@@ -15,6 +18,8 @@ namespace ETLEngineCore.Graph
 
         // Имя таблицы в базе
         private string dbTableName;
+
+        private Dictionary<string, Func<object>> getDefaultValue;
 
         #endregion Поля
 
@@ -30,7 +35,7 @@ namespace ETLEngineCore.Graph
         /// </summary>
         public string DBTable {
             get => dbTableName;
-            set => UpdateTableInfo(value);
+            private set => UpdateTableInfo(value);
         }
 
         /// <summary>
@@ -41,6 +46,31 @@ namespace ETLEngineCore.Graph
         #endregion Свойства
 
         #region Вспомогательные функции
+
+        /// <summary>
+        /// Создание из строк таблицы объекты для базы
+        /// </summary>
+        private dynamic GetObjectFromDataRow(DataRow row)
+        {
+            var obj = new ExpandoObject();
+            var objDict = (IDictionary<string, object>)obj;
+
+            foreach (DataColumn column in row.Table.Columns)
+                objDict.Add(column.ColumnName, row[column.ColumnName]);
+
+            return obj;
+        }
+
+        /// <summary>
+        /// Получение набора строк для выполнения операции в базе
+        /// </summary>
+        private dynamic[] GetRowsByState(DataRowState state)
+        {
+            return Data.Rows.Cast<DataRow>()
+                .Where(r => r.RowState == state)
+                .Select(r => GetObjectFromDataRow(r))
+                .ToArray();
+        }
 
         /// <summary>
         /// Формирование структуры DataTable для хранения информации
@@ -54,17 +84,30 @@ namespace ETLEngineCore.Graph
                     " from information_schema.columns" +
                     $" where  table_name = '{DBTable}'");
 
+                // Словарь функций для формирования значения по умолчанию у строк
+                getDefaultValue = new Dictionary<string, Func<object>>();
+
                 table = new DataTable();
                 foreach (dynamic row in result)
                 {
                     DataColumn dc = new DataColumn
                     {
                         ColumnName = row.column_name,
-                        DataType = Database.FromDBType(row.data_type),
-                        DefaultValue = row.column_default
+                        DataType = Database.FromDBType(row.data_type)
                     };
 
                     table.Columns.Add(dc);
+
+                    // Функции для значений по умолчанию
+                    object defaultValue = row.column_default;
+
+                    Func<object> f;
+                    if (row.column_name == "id")
+                        f = () => Database.ExecuteScalar($"select {defaultValue}");
+                    else
+                        f = () => defaultValue;
+
+                    getDefaultValue.Add(row.column_name, f);
                 }
             }
             catch (Exception ex)
@@ -93,7 +136,7 @@ namespace ETLEngineCore.Graph
 
                 // Если не существует, то создаём новую
                 if (!result.exists)
-                        return;
+                    return;
 
                 dbTableName = tableName;
 
@@ -112,27 +155,37 @@ namespace ETLEngineCore.Graph
 
         #region Операции с базой
 
-        /// <summary>
-        /// Создание таблицы
-        /// </summary>
-        public void CreateDBTable(string tableName, MetaData meta)
+        public void CreateTable(MetaData meta)
         {
             table = new DataTable();
             table.Columns.Clear();
-            table.Columns.AddRange(meta.Select(m => new DataColumn {
+            table.Columns.AddRange(meta.Select(m => new DataColumn
+            {
                 ColumnName = m.To,
                 DataType = m.Type
             }).ToArray());
+        }
+
+        /// <summary>
+        /// Создание таблицы
+        /// </summary>
+        public void CreateDBTable(string tableName)
+        {
+            if (Database == null)
+                return;
+
+            tableName = tableName.ToLower();
 
             Database.Execute(string.Format(
-                "create table {0} ({1})",
+                "create table if not exists {0} (" +
+                " id serial primary key, {1})",
                 tableName,
                 string.Join(", ", table.Columns.Cast<DataColumn>().Select(
                     c => $"{c.ColumnName} {Database.ToDBType(c.DataType)}"
                 ))
             ));
 
-            dbTableName = tableName;
+            DBTable = tableName;
         }
 
         /// <summary>
@@ -176,16 +229,35 @@ namespace ETLEngineCore.Graph
         /// <returns></returns>
         public int Update()
         {
+            if (Database == null)
+                return -1;
+
             try
             {
-                #warning необходимо преобразовать строки в объекты с заданными свойствами
+                // Удаление
+                int deletedCount = Database.Execute($"delete from {DBTable} where id = @id",
+                    GetRowsByState(DataRowState.Deleted));
 
-                Database.Execute($"delete from {DBTable} where id = @id",
-                    Data.Rows.Cast<DataRow>().Where(t => t.RowState == DataRowState.Deleted));
-
-                Database.Execute(string.Format("update {0} set {1} where id = @id",
+                // Обновление
+               int updatedCount = Database.Execute(string.Format("update {0} set {1} where id = @id",
                     DBTable,string.Join(", ", Data.Columns.Cast<DataColumn>().Select(c => $"{c.ColumnName} = @{c.ColumnName}"))),
-                    Data.Rows.Cast<DataRow>().Where(r => r.RowState == DataRowState.Modified));
+                    GetRowsByState(DataRowState.Modified));
+
+                // Вставка
+                // Вставляем всё, кроме ID, он генерируется автоматически
+                string[] columns = Data.Columns.Cast<DataColumn>()
+                    .Select(c => c.ColumnName)
+                    .ToArray();
+
+                int insertedCount = Database.Execute(string.Format("insert into {0} ({1}) values ({2})",
+                        DBTable, string.Join(", ", columns), string.Join(", ", columns.Select(c => "@" + c))),
+                    GetRowsByState(DataRowState.Added));
+
+                // Коммит
+                Database.Commit();
+
+                // Очистка таблицы перед следующей порцией данных
+                table.Clear();
             }
             catch (Exception ex)
             {
@@ -196,11 +268,57 @@ namespace ETLEngineCore.Graph
             return -1;
         }
 
-
         #endregion Операции с базой
 
+        public bool AddRow(object[] mapping)
+        {
+            try
+            {
+                DataRow row = Data.NewRow();
 
+                foreach (DataColumn column in table.Columns)
+                    row[column.ColumnName] = getDefaultValue[column.ColumnName]();
+
+                for (int i = 0; i < mapping.Length; i += 2)
+                {
+                    string field = mapping[i].ToString();
+                    if (table.Columns.Contains(field))
+                        row[field] = mapping[i + 1];
+                }
+
+                Data.Rows.Add(row);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Очистка таблицы
+        /// </summary>
+        public void Clear()
+        {
+            table.Clear();
+        }
 
         #endregion Основные функции
+
+        #region IEnumerable
+
+        public IEnumerator<DataRow> GetEnumerator()
+        {
+            return (IEnumerator<DataRow>)table.Rows.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
     }
 }

@@ -123,11 +123,19 @@ namespace ETLEngineCore.Database
         }
 
         /// <summary>
-        /// Параметризированный запрос
+        /// Параметризированный запрос, возвращающий количество строк
         /// </summary>
         public int Execute(string query, object param = null)
         {
             return connection.Execute(query, param);
+        }
+
+        /// <summary>
+        /// Параметризированный запрос, возвращающий значение
+        /// </summary>
+        public object ExecuteScalar(string query, object param = null)
+        {
+            return connection.ExecuteScalar(query, param);
         }
 
         /// <summary>
