@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ETLEngineCore.Graph
+namespace ELTEngineCore.Graph
 {
     /// <summary>
     /// Родительский класс для всех элементов графа

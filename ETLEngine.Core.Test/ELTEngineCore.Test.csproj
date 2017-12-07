@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ETLEngineCore\ETLEngineCore.csproj" />
+    <ProjectReference Include="..\ETLEngineCore\ELTEngineCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

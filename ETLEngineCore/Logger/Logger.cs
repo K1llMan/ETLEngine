@@ -5,9 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-using ETLEngineCore.Extensions;
+using ELTEngineCore.Extensions;
 
-namespace ETLEngineCore
+namespace ELTEngineCore
 {
     public static class Logger
     {

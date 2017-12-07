@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using ETLEngineCore.Graph;
+using ELTEngineCore.Graph;
 
-namespace ETLEngineCore.Staging
+namespace ELTEngineCore.Staging
 {
     /// <summary>
     /// Этап

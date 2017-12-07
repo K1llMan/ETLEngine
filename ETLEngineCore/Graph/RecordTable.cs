@@ -5,9 +5,9 @@ using System.Data;
 using System.Dynamic;
 using System.Linq;
 
-using ETLEngineCore.Database;
+using ELTEngineCore.Database;
 
-namespace ETLEngineCore.Graph
+namespace ELTEngineCore.Graph
 {
     public class RecordTable: IEnumerable<DataRow>
     {
@@ -171,7 +171,7 @@ namespace ETLEngineCore.Graph
         /// </summary>
         public void CreateDBTable(string tableName)
         {
-            if (Database == null)
+            if (Database == null || string.IsNullOrEmpty(tableName))
                 return;
 
             tableName = tableName.ToLower();
@@ -207,7 +207,7 @@ namespace ETLEngineCore.Graph
                 {
                     DataRow row = table.NewRow();
                     foreach (dynamic field in dbRow)
-                        row[field.Key] = field.Value;
+                        row[field.Key] = field.Value == null ? DBNull.Value : field.Value;
 
                     table.Rows.Add(row);
                 }

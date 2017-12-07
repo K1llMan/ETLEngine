@@ -3,19 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-using ETLEngineCore.Graph;
+using ELTEngineCore.Graph;
 
-namespace ETLEngineCore.Components
+namespace ELTEngineCore.Components
 {
     public class TextFileReader : Node
     {
         #region Основные функции
 
+        public TextFileReader(MetaData meta) : base(meta)
+        {
+            
+        }
+
         public override void Execute()
         {
+            /*
             if (!parameters.ContainsKey("searchPath"))
                 return;
-
+            
             Stream fs = null;
             StreamReader sr = null;
 
@@ -57,6 +63,7 @@ namespace ETLEngineCore.Components
                     if (fs != null)
                         fs.Close();
                 }
+            */
         }
 
         #endregion Основные функции

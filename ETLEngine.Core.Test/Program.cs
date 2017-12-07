@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 
-using ETLEngineCore.Database;
-using ETLEngineCore.Graph;
+using ELTEngineCore.Database;
+using ELTEngineCore.Graph;
 
-namespace ETLEngineCore.Test
+namespace ELTEngineCore.Test
 {
     class Program
     {
@@ -26,7 +26,8 @@ namespace ETLEngineCore.Test
             };
 
             node.Init(new Dictionary<string, string>{
-                { "dbTempTable", "true" }
+                { "dbTempTable", "false" },
+                { "dbTable", "test_table2" }
             });
             /*
             RecordTable rt = new RecordTable
@@ -50,7 +51,7 @@ namespace ETLEngineCore.Test
             
 
             /*
-            ETLEngine engine = new ETLEngine();
+            ELTEngine engine = new ELTEngine();
             engine.RunGraph("testGraph.xml");
             */
         }

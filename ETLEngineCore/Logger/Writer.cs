@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using ETLEngineCore.Extensions;
+using ELTEngineCore.Extensions;
 
-namespace ETLEngineCore
+namespace ELTEngineCore
 {
     /// <summary>
     /// Типы логгеров

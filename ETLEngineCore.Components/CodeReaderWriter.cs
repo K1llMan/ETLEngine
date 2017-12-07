@@ -1,6 +1,4 @@
-﻿using ETLEngineCore.Graph;
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 
@@ -10,11 +8,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace ETLEngineCore.Components
+using ELTEngineCore.Graph;
+
+namespace ELTEngineCore.Components
 {
     public class CodeReaderWriter : Node
     {
         #region Основные функции
+
+        public CodeReaderWriter(MetaData meta) : base(meta)
+        {
+            
+        }
 
         public override void Execute()
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
-namespace ETLEngineCore
+namespace ELTEngineCore
 {
     public static class StringResources
     {
@@ -16,7 +16,7 @@ namespace ETLEngineCore
         {
             resources = new Dictionary<string, Dictionary<string, string>>();
 
-            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ETLEngineCore.Logger.StringResources.xml");
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ELTEngineCore.Logger.StringResources.xml");
 
             XmlDocument doc = new XmlDocument();
             doc.Load(stream);

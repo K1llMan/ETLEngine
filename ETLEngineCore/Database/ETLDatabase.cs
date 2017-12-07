@@ -6,10 +6,10 @@ using System.Dynamic;
 using System.Linq;
 
 using Dapper;
-using ETLEngineCore.Extensions;
+using ELTEngineCore.Extensions;
 using Npgsql;
 
-namespace ETLEngineCore.Database
+namespace ELTEngineCore.Database
 {
     public class ETLDatabase
     {

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETLEngineCore", "ETLEngineCore\ETLEngineCore.csproj", "{0670CE00-F142-42A8-8734-E079A06D6685}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ELTEngineCore", "ETLEngineCore\ELTEngineCore.csproj", "{0670CE00-F142-42A8-8734-E079A06D6685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETLEngineCore.Components", "ETLEngineCore.Components\ETLEngineCore.Components.csproj", "{7303BBB2-5730-44EF-8949-C209250CB846}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ELTEngineCore.Components", "ETLEngineCore.Components\ELTEngineCore.Components.csproj", "{7303BBB2-5730-44EF-8949-C209250CB846}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETLEngineCore.Test", "ETLEngine.Core.Test\ETLEngineCore.Test.csproj", "{14064BEE-804F-4EE9-A133-6DC4E203C50C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ELTEngineCore.Test", "ETLEngine.Core.Test\ELTEngineCore.Test.csproj", "{14064BEE-804F-4EE9-A133-6DC4E203C50C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

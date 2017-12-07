@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ETLEngineCore.Graph
+namespace ELTEngineCore.Graph
 {
     /// <summary>
     /// Входящий порт
@@ -10,21 +10,13 @@ namespace ETLEngineCore.Graph
         #region Поля
 
         protected OutputPort port;
-        protected IEnumerator<Record> enumerator;
+        protected IEnumerator<KeyValuePair<string, string>> enumerator;
 
         private bool isFirstRead = true;
 
         #endregion Поля
 
         #region Свойства
-
-        /// <summary>
-        /// Получение метаданных для записей
-        /// </summary>
-        public MetaData MetaData
-        {
-            get { return port.MetaData; }
-        }
 
         #endregion Свойства
 
@@ -38,7 +30,7 @@ namespace ETLEngineCore.Graph
         /// <summary>
         /// Чтение следующей записи
         /// </summary>
-        public Record Read()
+        public KeyValuePair<string, string> Read()
         {
             // При первом чтении формируем итератор
             if (isFirstRead)

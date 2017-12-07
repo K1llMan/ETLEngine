@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using ETLEngineCore.Database;
+using ELTEngineCore.Database;
 
-namespace ETLEngineCore.Graph
+namespace ELTEngineCore.Graph
 {
     /// <summary>
     /// Узел
@@ -46,6 +46,11 @@ namespace ETLEngineCore.Graph
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Является ли таблица временной
+        /// </summary>
+        public bool IsTemporary { get; private set; }
+
         #endregion Свойства
 
         #region Основные функции
@@ -53,9 +58,9 @@ namespace ETLEngineCore.Graph
         public Node(MetaData meta)
         {
             table = new RecordTable();
-            table.CreateTable(meta);
-
             MetaData = meta;
+
+            table.CreateTable(meta);
         }
 
         /// <summary>
@@ -65,8 +70,15 @@ namespace ETLEngineCore.Graph
         {
             parameters = inputParameters;
 
-            if (Convert.ToBoolean(inputParameters["dbTempTable"]))
-                table.CreateDBTable($"temp{ID}");
+            IsTemporary = inputParameters.ContainsKey("dbTempTable") && Convert.ToBoolean(inputParameters["dbTempTable"]);
+
+            // Создаём временную таблицу или запрашиваем структуру существующей таблицы
+            string tableName = IsTemporary ? $"temp{ID}" : string.Empty;
+            if (inputParameters.ContainsKey("dbTable"))
+                tableName = inputParameters["dbTable"];
+
+            table.CreateDBTable(tableName);
+            table.Query();
 
             OutputPorts[0] = new OutputPort();
         }

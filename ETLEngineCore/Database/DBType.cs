@@ -1,4 +1,4 @@
-﻿namespace ETLEngineCore.Database
+﻿namespace ELTEngineCore.Database
 {
     public enum DBType
     {

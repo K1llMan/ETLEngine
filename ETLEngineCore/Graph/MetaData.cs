@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ETLEngineCore.Graph
+namespace ELTEngineCore.Graph
 {
     /// <summary>
     /// Запись правила метаданных

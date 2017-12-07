@@ -1,4 +1,4 @@
-﻿namespace ETLEngineCore.Graph
+﻿namespace ELTEngineCore.Graph
 {
     /// <summary>
     /// Ребро
@@ -32,12 +32,13 @@
         /// </summary>
         public override void Execute()
         {
+            /*
             Record r = InputPorts[0].Read();
             while (r != null)
             {
                 OutputPorts[0].Write(r);
                 r = InputPorts[0].Read();
-            }
+            }*/
         }
 
         #endregion Основные функции

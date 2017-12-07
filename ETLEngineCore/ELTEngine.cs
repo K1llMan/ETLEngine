@@ -6,15 +6,15 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 
-using ETLEngineCore.Graph;
-using ETLEngineCore.Staging;
+using ELTEngineCore.Graph;
+using ELTEngineCore.Staging;
 
-namespace ETLEngineCore
+namespace ELTEngineCore
 {
     /// <summary>
     /// Главный класс движка
     /// </summary>
-    public class ETLEngine
+    public class ELTEngine
     {
         #region Поля
 
@@ -178,7 +178,7 @@ namespace ETLEngineCore
                     fromNode.OutputPorts[fromNum] = new OutputPort();
 
                 edge.InputPorts[0] = new InputPort(fromNode.OutputPorts[fromNum]);
-                edge.OutputPorts[0] = new OutputPort { MetaData = metaList[meta] };
+                edge.OutputPorts[0] = new OutputPort();
 
                 graphNodes.First(n => n.ID == toName).InputPorts[toNum] = new InputPort(edge.OutputPorts[0]);
 
@@ -220,7 +220,7 @@ namespace ETLEngineCore
 
         #region Основные функции
 
-        public ETLEngine()
+        public ELTEngine()
         {
             metaList = new Dictionary<string, MetaData>();
             stages = new List<Stage>();

@@ -2,31 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ETLEngineCore.Graph
+namespace ELTEngineCore.Graph
 {
-    public class OutputPort: Port, IEnumerable<Record>
+    public class OutputPort: Port, IEnumerable<KeyValuePair<string, string>>
     {
         #region Поля
 
-        protected RecordList data;
+        protected Dictionary<string, string> data;
 
         #endregion Поля
 
         #region Свойства
-
-        /// <summary>
-        /// Получение метаданных для записей
-        /// </summary>
-        public MetaData MetaData
-        {
-            get { return data?.MetaData; }
-            set
-            {
-                data?.Clear();
-
-                data = new RecordList(value);
-            }
-        }
 
         #endregion Свойства
 
@@ -35,33 +21,9 @@ namespace ETLEngineCore.Graph
         /// <summary>
         /// Запись на порт
         /// </summary>
-        public void Write(List<object> dataRow)
+        public void Write(Dictionary<string, string> dataRow)
         {
-            // Если метаданные у порта отсутствуют, то пытаемся сформировать по данным
-            if (MetaData == null)
-            {
-                int i = -1;
-                MetaData = new MetaData(dataRow.Select(f => {
-                    i++;
-                    return new MetaRecord {
-                        From = "field" + i, To = "field" + i, Type = typeof(string)
-                    };
-                }).ToList());
-            }
-
-            data.Add(dataRow);
-        }
-
-        /// <summary>
-        /// Запись на порт
-        /// </summary>
-        public void Write(Record dataRow)
-        {
-            // Если метаданные у порта отсутствуют, то берем от поступающей записи
-            if (MetaData == null)
-                MetaData = dataRow.Parent.MetaData;
-
-            data.Add(dataRow.Reformat(MetaData));
+            data = dataRow;
         }
 
         /// <summary>
@@ -77,7 +39,7 @@ namespace ETLEngineCore.Graph
 
         #region IEnumerator
 
-        public IEnumerator<Record> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
             return data.GetEnumerator();
         }
