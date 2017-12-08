@@ -1,3 +1,3 @@
-# ETLEngine
+# ELTEngine
 
-ETL engine sceleton under construction om .Net Core 2.0.x
+ELT engine sceleton under construction om .Net Core 2.0.x
