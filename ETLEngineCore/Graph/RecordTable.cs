@@ -41,7 +41,15 @@ namespace ELTEngineCore.Graph
         /// <summary>
         /// База данных, с которой осуществляется работа
         /// </summary>
-        public ETLDatabase Database { get; set; }
+        public ELTDatabase Database { get; set; }
+
+        /// <summary>
+        /// Поля в таблице
+        /// </summary>
+        public string[] Fields
+        {
+            get => Data.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray();
+        }
 
         #endregion Свойства
 

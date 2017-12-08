@@ -64,6 +64,12 @@ namespace ELTEngineCore.Components
                         fs.Close();
                 }
             */
+
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                { "table", DBTable },
+                { "fields", table.Fields }
+            };
         }
 
         #endregion Основные функции

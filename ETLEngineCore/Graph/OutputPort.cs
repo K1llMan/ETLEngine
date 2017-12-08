@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace ELTEngineCore.Graph
 {
-    public class OutputPort: Port, IEnumerable<KeyValuePair<string, string>>
+    public class OutputPort: Port, IEnumerable<KeyValuePair<string, object>>
     {
         #region Поля
 
-        protected Dictionary<string, string> data;
+        protected Dictionary<string, object> data;
 
         #endregion Поля
 
@@ -21,7 +21,7 @@ namespace ELTEngineCore.Graph
         /// <summary>
         /// Запись на порт
         /// </summary>
-        public void Write(Dictionary<string, string> dataRow)
+        public void Write(Dictionary<string, object> dataRow)
         {
             data = dataRow;
         }
@@ -39,7 +39,7 @@ namespace ELTEngineCore.Graph
 
         #region IEnumerator
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
             return data.GetEnumerator();
         }

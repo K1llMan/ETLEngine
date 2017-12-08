@@ -159,9 +159,8 @@ namespace ELTEngineCore
         /// <summary>
         /// Инициализация
         /// </summary>
-        public static void Initialize(string fileName, bool useConsole)
+        public static void Initialize(string fileName, string logsPath, bool useConsole)
         {
-            string logsPath = string.Empty;
             string baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             logsDir = string.Format("{0}\\{1}\\", baseDir,
                 string.IsNullOrEmpty(logsPath) ? StringResources.GetLine("LogsPath") : logsPath);

@@ -11,7 +11,7 @@ using Npgsql;
 
 namespace ELTEngineCore.Database
 {
-    public class ETLDatabase
+    public class ELTDatabase
     {
         #region Поля
 

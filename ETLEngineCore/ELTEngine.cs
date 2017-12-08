@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 
+using ELTEngineCore.Configuration;
+using ELTEngineCore.Database;
 using ELTEngineCore.Graph;
 using ELTEngineCore.Staging;
 
@@ -18,14 +21,24 @@ namespace ELTEngineCore
     {
         #region Поля
 
+        private ELTConfiguration config;
+
+        private ELTDatabase db;
+
         private Dictionary<string, Type> importedTypes;
         private Dictionary<string, MetaData> metaList;
 
         private List<Stage> stages;
 
+
         #endregion Поля
 
         #region Вспомогательные функции
+
+        private string Tabs(int n)
+        {
+            return new string('\t', n);
+        }
 
         /// <summary>
         /// Добавляет в словарь все типы элементов графа
@@ -33,14 +46,12 @@ namespace ELTEngineCore
         private string AddAssemblyTypes(Assembly assembly)
         {
             List<Type> types = assembly.GetTypes().Where(t => typeof(GraphElement).IsAssignableFrom(t) && !importedTypes.ContainsKey(t.Name)).ToList();
-            if (types.Count == 0)
-                return string.Empty;
 
             foreach (Type type in types)
                 importedTypes.Add(type.Name, type);
 
-            return string.Format("\r\n\t{0} ({1}): \r\n{2}", assembly.GetName().Name, assembly.GetName().Version,
-                string.Join("\r\n", types.Select(t => string.Format("\t\t{0}", t.Name))));
+            return $"\r\n{Tabs(1)}" + string.Format("{0} ({1}): \r\n{2}", assembly.GetName().Name, assembly.GetName().Version,
+                types.Count == 0 ? $"{Tabs(2)}Пропущено" : string.Join("\r\n", types.Select(t => $"{Tabs(2)}{t.Name}")));
         }
 
         /// <summary>
@@ -50,12 +61,31 @@ namespace ELTEngineCore
         {
             importedTypes = new Dictionary<string, Type>();
 
-            string typesInfo = AddAssemblyTypes(Assembly.GetExecutingAssembly());
-            DirectoryInfo pluginsDir = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Plugins");
-            foreach (var file in pluginsDir.GetFiles().Where(x => x.Name.ToLower().EndsWith(".dll")))
+            StringBuilder typesInfo = new StringBuilder();
+            typesInfo.Append(AddAssemblyTypes(Assembly.GetExecutingAssembly()));
+
+            foreach (string path in config.PluginsPath.Split(';'))
             {
-                Assembly assembly = Assembly.LoadFile(file.FullName);
-                typesInfo += AddAssemblyTypes(assembly);
+                // Если корень диска не найден в пути, то директория ищется относительно рабочей
+                DirectoryInfo pluginsDir = new DirectoryInfo(
+                    string.IsNullOrEmpty(Path.GetPathRoot(path)) 
+                    ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + path
+                    : path);
+
+                typesInfo.Append($"\r\n\r\n{pluginsDir.FullName}:");
+
+                foreach (var file in pluginsDir.GetFiles().Where(x => x.Name.ToLower().EndsWith(".dll")))
+                {
+                    try
+                    {
+                        Assembly assembly = Assembly.LoadFile(file.FullName);
+                        typesInfo.Append(AddAssemblyTypes(assembly));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
             }
 
             Logger.WriteToTrace(string.Format("Из плагинов загружены следующие типы: {0}", typesInfo) , TraceMessageKind.Information);
@@ -220,10 +250,17 @@ namespace ELTEngineCore
 
         #region Основные функции
 
-        public ELTEngine()
+        public ELTEngine(ELTConfiguration configuration)
         {
+            config = configuration;
+
             metaList = new Dictionary<string, MetaData>();
             stages = new List<Stage>();
+
+            // Соединение с базой
+            db = new ELTDatabase();
+            db.Connect(config.ConnectionString);
+            db.BeginTransaction();
         }
 
         /// <summary>
@@ -231,7 +268,7 @@ namespace ELTEngineCore
         /// </summary>
         public void RunGraph(string graphPath)
         {
-            Logger.Initialize(Path.GetFileNameWithoutExtension(graphPath), true);
+            Logger.Initialize(Path.GetFileNameWithoutExtension(graphPath), config.LogsPath, true);
             
             LoadPlugins();
 

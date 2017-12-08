@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 
+using ELTEngineCore.Configuration;
 using ELTEngineCore.Database;
 using ELTEngineCore.Graph;
 
@@ -10,8 +11,8 @@ namespace ELTEngineCore.Test
     class Program
     {
         static void Main(string[] args)
-        {
-            ETLDatabase db = new ETLDatabase();
+        {/*
+            ELTDatabase db = new ELTDatabase();
             db.Connect("postgresql://localhost:5432/postgres;User ID=postgres;Password=dv;");
             db.BeginTransaction();
 
@@ -28,7 +29,7 @@ namespace ELTEngineCore.Test
             node.Init(new Dictionary<string, string>{
                 { "dbTempTable", "false" },
                 { "dbTable", "test_table2" }
-            });
+            });*/
             /*
             RecordTable rt = new RecordTable
             {
@@ -50,10 +51,10 @@ namespace ELTEngineCore.Test
             rt.CreateDBTable("test_table2", );*/
             
 
-            /*
-            ELTEngine engine = new ELTEngine();
+            
+            ELTEngine engine = new ELTEngine(new ELTConfiguration("testConfig.xml"));
             engine.RunGraph("testGraph.xml");
-            */
+            
         }
     }
 }

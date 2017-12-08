@@ -10,7 +10,7 @@ namespace ELTEngineCore.Graph
         #region Поля
 
         protected OutputPort port;
-        protected IEnumerator<KeyValuePair<string, string>> enumerator;
+        protected IEnumerator<KeyValuePair<string, object>> enumerator;
 
         private bool isFirstRead = true;
 
@@ -30,7 +30,7 @@ namespace ELTEngineCore.Graph
         /// <summary>
         /// Чтение следующей записи
         /// </summary>
-        public KeyValuePair<string, string> Read()
+        public KeyValuePair<string, object> Read()
         {
             // При первом чтении формируем итератор
             if (isFirstRead)

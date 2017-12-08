@@ -22,7 +22,7 @@ namespace ELTEngineCore.Graph
         /// <summary>
         /// База данных, с которой осуществляется работа
         /// </summary>
-        public ETLDatabase Database
+        public ELTDatabase Database
         {
             get => table.Database;
             set => table.Database = value;
